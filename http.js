@@ -1,7 +1,34 @@
-import axios from "axios";
+import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
+import axios from 'axios';
 
 // const BASE_URL = "http://pinocomo.ddns.net:9999/babysafe/login?user=pino&pwd=pino";
-const BASE_URL = "http://pinocomo.ddns.net:9999/babysafe/login";
+// const BASE_URL = "http://pinocomo.ddns.net:9999/babysafe/login";
+// const BASE_URL = "http://172.31.234.97:8084/babysafe/login";
+const BASE_URL = "http://130.0.151.40:8090/babysafe/login";
+const [response, setResponse] = useState('');
+
+
+const fetchData = async () => {
+  try {
+    const url = 'http://BASE_URL.com';
+    const user = 'myUsername';
+    const password = 'myPassword';
+
+    const response = await axios.get(url, {
+      params: {
+        user,
+        password,
+      },
+    });
+
+    setResponse(response.data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+
 
 export async function getSession(utente, password) {
   const response = await axios.get(BASE_URL, {
