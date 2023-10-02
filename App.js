@@ -1,6 +1,7 @@
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { getSession } from "./http";
+import { Button, StyleSheet, Text, TextInput, View, Alert } from "react-native";
+import { getSession, fetchData, fetchData2 } from "./http";
 import { useEffect, useState } from "react";
+import axios from 'axios';
 
 export default function App() {
   const [sessionID, setSessionID] = useState("");
@@ -9,6 +10,72 @@ export default function App() {
   const [usr, setUsr] = useState("");
   const [pwd, setPwd] = useState("");
 
+  function getSessionHandler2(){
+    fetchData2()
+  }
+
+  // Define an asynchronous function that returns an array with various data structures
+  async function getData() {
+    try {
+      // Make an HTTP GET request using Axios
+      const response = await axios.get('http://37.159.251.169:8090/babysafe/login?user=pino&pwd=pino');
+  
+      if (response.status === 200) {
+        console.log('Responce OK');
+        console.log('Responce data = ', response.data);
+        // const {
+        //   numberData,
+        //   stringData,
+        //   objectData,
+        //   arrayData,
+        // } = response.data;
+
+        const [
+
+          numberData,
+          stringData,
+          objectData
+        ]
+        //   arrayData,
+         = [response.data.message, response.data.params.sessionId, response.data.params.username];
+
+        console.log('Responce Data: ', response.data)
+        console.log('Responce Data Message: ', response.data.message)
+        console.log('Responce Data Params SessionID: ', response.data.params.sessionId)
+        console.log('Responce Data Params Username: ', response.data.params.username)
+  
+        // return [numberData, stringData, objectData, arrayData];
+        return [numberData, stringData, objectData];
+
+      } else {
+        // Alert.alert('Error fetching Axios data', error);
+        throw new Error('Failed to fetch data');
+      }
+    } catch (error) {
+      console.log('Errore GetData: ', error)
+      // Alert.alert('Error fetching Axios data', error);
+      throw error; // Rethrow the error for further handling
+    }
+  }
+  
+  // Call the asynchronous function and handle errors
+  async function main() {
+    try {
+      // const [number, string, person, numbersArray] = await getData();
+      const [number, string, person] = await getData();
+      
+      // Now you can use the destructured data
+      console.log("Number:", number);
+      console.log("String:", string);
+      console.log("Person:", person);
+      // console.log("Numbers Array:", numbersArray);
+    } catch (error) {
+      // Alert.alert('Error fetching Axios data', error)
+      console.log('Errore: ', error)
+      console.error("Error:", error);
+    }
+  }
+  
   async function getSessionHandler() {
     console.log("+++++++++++++++++++++++++++++");
     console.log("GetSession1: ");
@@ -48,7 +115,7 @@ export default function App() {
         placeholder="Password"
       />
       <Text style={styles.text}>Test chiamate HTTP...</Text>
-      <Button style={styles.button} title="Chek utente" onPress={getSessionHandler}></Button>
+      <Button style={styles.button} title="Chek utente" onPress={main}></Button>
       {/* <Text>The Session ID is: {sessionID}</Text> */}
       {isLogged && <Text>The Message is: {message}</Text>}
       {isLogged && sessionID && <Text>The Session ID is: {sessionID}</Text>}
